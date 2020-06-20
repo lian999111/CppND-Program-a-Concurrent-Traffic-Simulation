@@ -58,6 +58,7 @@ private:
     // send in conjunction with move semantics.
 
     TrafficLightPhase _currentPhase{TrafficLightPhase::red};
+    MessageQueue<TrafficLightPhase> _msgQueue;
 
     std::condition_variable _condition;
     std::mutex _mutex;

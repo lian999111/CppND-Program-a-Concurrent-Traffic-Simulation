@@ -4,7 +4,7 @@
 
 /* Implementation of class "MessageQueue" */
 
-/* 
+
 template <typename T>
 T MessageQueue<T>::receive()
 {
@@ -18,8 +18,11 @@ void MessageQueue<T>::send(T &&msg)
 {
     // FP.4a : The method send should use the mechanisms std::lock_guard<std::mutex> 
     // as well as _condition.notify_one() to add a new message to the queue and afterwards send a notification.
+    std::lock_guard<std::mutex> lck(_mtx);
+    _queue.push_back(std::move(msg));
+    _cond.notify_one();
 }
-*/
+
 
 /* Implementation of class "TrafficLight" */
 
@@ -73,10 +76,14 @@ void TrafficLight::cycleThroughPhases()
             // Toggle the light
             if (_currentPhase == TrafficLightPhase::red) {
                 _currentPhase = TrafficLightPhase::green;
-                // TODO: send the phase to the message queue
+                // PF.4b : send the phase to the message queue
+                // I think send(std::move(_currentPhase)) causes a confusion about what state _currentPhase is in after being moved from
+                // So here I pass an rvalue enum instead of moving from _currentPhase
+                _msgQueue.send(TrafficLightPhase::green);
             } else {
                 _currentPhase = TrafficLightPhase::red;
-                // TODO: send the phase to the message queue
+                // PF.4b : send the phase to the message queue
+                _msgQueue.send(TrafficLightPhase::red);
             }
         }
     }
