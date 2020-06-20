@@ -13,8 +13,13 @@ T MessageQueue<T>::receive()
     // The received object should then be returned by the receive function. 
     std::unique_lock<std::mutex> ulck(_mtx);    // it will be temporarily unlocked in wait()
     _cond.wait(ulck, [this] { return !_queue.empty(); });   // predicate lambda function to avoid spurious wake-ups
-    T msg = _queue.front();
-    _queue.pop_front();    
+
+    // Using _queue.front() and _queue.pop_front() is not proper here, as _queue in an infrequently-used intersection will stack up.
+    // That is, the front element may be out-dated and unrelevant. 
+    // _queue.back() on the other hand returns the most recent message, which we care. Also, clear() should be called to flush out unrelevant history.
+    // IMO, message passing of this project needs just a variable to store the latest signal instead of a queue to store the history.
+    T msg = _queue.back();
+    _queue.clear();    
     return msg;
 }
 
