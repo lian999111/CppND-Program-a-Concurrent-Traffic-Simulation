@@ -73,7 +73,7 @@ void TrafficLight::cycleThroughPhases()
     std::random_device rd;
     std::mt19937 engine(rd());
     std::uniform_real_distribution<> distr(4, 6);
-    double cycleDuration = distr(engine);
+    float cycleDuration = distr(engine);
 
     // Setup stop watch
     std::chrono::time_point<std::chrono::system_clock> lastTimestamp;
@@ -82,7 +82,7 @@ void TrafficLight::cycleThroughPhases()
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         
-        long elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastTimestamp).count();
+        float elapsedTime = std::chrono::duration_cast<std::chrono::duration<float>>(std::chrono::system_clock::now() - lastTimestamp).count();
         if(elapsedTime >= cycleDuration) {
             // Toggle the light
             if (_currentPhase == TrafficLightPhase::red) {
