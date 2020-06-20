@@ -23,7 +23,7 @@ void MessageQueue<T>::send(T &&msg)
 
 /* Implementation of class "TrafficLight" */
 
-/* 
+
 TrafficLight::TrafficLight()
 {
     _currentPhase = TrafficLightPhase::red;
@@ -43,7 +43,8 @@ TrafficLightPhase TrafficLight::getCurrentPhase()
 
 void TrafficLight::simulate()
 {
-    // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class. 
+    // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread when the public method „simulate“ is called. To do this, use the thread queue in the base class.
+    threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases, this));
 }
 
 // virtual function which is executed in a thread
@@ -53,6 +54,31 @@ void TrafficLight::cycleThroughPhases()
     // and toggles the current phase of the traffic light between red and green and sends an update method 
     // to the message queue using move semantics. The cycle duration should be a random value between 4 and 6 seconds. 
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles. 
+
+    // Pick a random cycle duration between 4 and 6 seconds
+    std::random_device rd;
+    std::mt19937 engine(rd());
+    std::uniform_real_distribution<> distr(4, 6);
+    double cycleDuration = distr(engine);
+
+    // Setup stop watch
+    std::chrono::time_point<std::chrono::system_clock> lastTimestamp;
+    lastTimestamp = std::chrono::system_clock::now();
+
+    while (true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        
+        long elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - lastTimestamp).count();
+        if(elapsedTime >= cycleDuration) {
+            // Toggle the light
+            if (_currentPhase == TrafficLightPhase::red) {
+                _currentPhase = TrafficLightPhase::green;
+                // TODO: send the phase to the message queue
+            } else {
+                _currentPhase = TrafficLightPhase::red;
+                // TODO: send the phase to the message queue
+            }
+        }
+    }
 }
 
-*/
