@@ -23,7 +23,7 @@ void send(T &&phase);
 T receive();
 
 private:
-    std::deque _queue;
+    std::deque<T> _queue;
     std::mutex _mtx;
     std::condition_variable _cond;
 };
