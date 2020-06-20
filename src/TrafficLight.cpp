@@ -91,11 +91,13 @@ void TrafficLight::cycleThroughPhases()
                 // I think send(std::move(_currentPhase)) causes a confusion about what state _currentPhase is in after being moved from
                 // So here I pass an rvalue enum instead of moving from _currentPhase
                 _msgQueue.send(TrafficLightPhase::green);
+                
             } else {
                 _currentPhase = TrafficLightPhase::red;
                 // PF.4b : send the phase to the message queue
                 _msgQueue.send(TrafficLightPhase::red);
             }
+            lastTimestamp = std::chrono::system_clock::now();
         }
     }
 }
