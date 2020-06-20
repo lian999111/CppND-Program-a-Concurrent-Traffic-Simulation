@@ -21,8 +21,8 @@ class MessageQueue
 public:
 // Since TrafficLightPhase is just an enum, I think pass-by-value makes no difference in terms of efficiency
 // Also, writing _deque.send(std::move(_currentPhase)) may cause a confusion about what state _currentPhase is in after being moved from.
-void send(TrafficLightPhase phase); 
-TrafficLightPhase receive();
+void send(T phase); 
+T receive();
 
 private:
     std::deque _queue;
