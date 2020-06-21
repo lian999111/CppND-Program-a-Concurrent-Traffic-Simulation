@@ -18,6 +18,8 @@ T MessageQueue<T>::receive()
     // That is, the front element may be out-dated and unrelevant. 
     // _queue.back() on the other hand returns the most recent message, which we care. Also, clear() should be called to flush out unrelevant history.
     // IMO, message passing of this project needs just a variable to store the latest signal instead of a queue to store the history.
+
+    // Ref: https://knowledge.udacity.com/questions/98313
     T msg = _queue.back();
     _queue.clear();    
     return msg;

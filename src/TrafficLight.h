@@ -23,9 +23,9 @@ void send(T &&phase);
 T receive();
 
 private:
-    std::deque<T> _queue;
-    std::mutex _mtx;
-    std::condition_variable _cond;
+    std::deque<T> _queue;           // queue to store signal sequence
+    std::mutex _mtx;                // mutex to protect _queue
+    std::condition_variable _cond;  // condition_variable to block and wait for green light
 };
 
 // FP.1 : Define a class „TrafficLight“ which is a child class of TrafficObject. 
@@ -60,8 +60,9 @@ private:
     TrafficLightPhase _currentPhase{TrafficLightPhase::red};
     MessageQueue<TrafficLightPhase> _msgQueue;
 
-    std::condition_variable _condition;
-    std::mutex _mutex;
+    // Not used
+    // std::condition_variable _condition;
+    // std::mutex _mutex;
 };
 
 #endif
